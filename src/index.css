@@ -1,0 +1,470 @@
+/* Fonts loaded in index.html (display=swap) to avoid render-blocking @import and reduce CLS */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 80 25% 97%;
+    --foreground: 150 30% 12%;
+
+    --card: 80 20% 95%;
+    --card-foreground: 150 30% 12%;
+
+    --popover: 80 20% 95%;
+    --popover-foreground: 150 30% 12%;
+
+    --primary: 152 55% 28%;
+    --primary-foreground: 80 25% 97%;
+
+    --secondary: 145 30% 90%;
+    --secondary-foreground: 150 30% 12%;
+
+    --muted: 100 15% 92%;
+    --muted-foreground: 150 10% 45%;
+
+    --accent: 38 70% 55%;
+    --accent-foreground: 150 30% 12%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 140 15% 85%;
+    --input: 140 15% 85%;
+    --ring: 152 55% 28%;
+
+    --radius: 0.75rem;
+
+    --nature-deep: 152 60% 22%;
+    --nature-mid: 152 45% 35%;
+    --nature-light: 145 35% 75%;
+    --nature-pale: 140 30% 92%;
+    --nature-mist: 160 20% 96%;
+    --earth-warm: 30 40% 45%;
+    --earth-sand: 38 35% 88%;
+    --gold-accent: 38 70% 55%;
+
+    --font-display: 'Cormorant Garamond', serif;
+    --font-body: 'Inter', sans-serif;
+
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply text-foreground;
+    font-family: var(--font-body);
+    line-height: 1.6;
+    letter-spacing: 0.01em;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    background-color: hsl(var(--background));
+    background-image:
+      radial-gradient(ellipse 100% 70% at 12% 8%, hsl(var(--nature-light) / 0.42), transparent 52%),
+      radial-gradient(ellipse 80% 55% at 88% 18%, hsl(var(--primary) / 0.12), transparent 48%),
+      radial-gradient(ellipse 65% 45% at 50% 95%, hsl(var(--gold-accent) / 0.1), transparent 50%);
+    background-attachment: fixed;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display);
+    letter-spacing: 0.01em;
+  }
+}
+
+html {
+  scroll-behavior: smooth;
+  /* Framer Motion useScroll({ target }) uses documentElement as container; static breaks offset math */
+  position: relative;
+}
+
+@layer components {
+  /* Frosted panels — use with rounded-* and padding on the element */
+  .glass-panel {
+    background-color: hsl(var(--card) / 0.52);
+    backdrop-filter: blur(18px) saturate(1.35);
+    -webkit-backdrop-filter: blur(18px) saturate(1.35);
+    border: 1px solid hsl(var(--border) / 0.45);
+    box-shadow:
+      0 8px 32px hsl(var(--nature-deep) / 0.07),
+      inset 0 1px 0 0 hsl(0 0% 100% / 0.55);
+  }
+
+  .glass-subtle {
+    background-color: hsl(var(--secondary) / 0.45);
+    backdrop-filter: blur(14px) saturate(1.25);
+    -webkit-backdrop-filter: blur(14px) saturate(1.25);
+    border: 1px solid hsl(var(--border) / 0.38);
+    box-shadow: inset 0 1px 0 0 hsl(0 0% 100% / 0.45);
+  }
+
+  .glass-dark {
+    background-color: hsl(var(--foreground) / 0.68);
+    backdrop-filter: blur(22px) saturate(1.2);
+    -webkit-backdrop-filter: blur(22px) saturate(1.2);
+    box-shadow: inset 0 1px 0 0 hsl(0 0% 100% / 0.12);
+  }
+
+  .glass-cta-primary {
+    background-color: hsl(var(--primary) / 0.92);
+    backdrop-filter: blur(12px) saturate(1.2);
+    -webkit-backdrop-filter: blur(12px) saturate(1.2);
+    border: 1px solid hsl(var(--primary-foreground) / 0.18);
+    box-shadow:
+      0 12px 40px hsl(var(--nature-deep) / 0.15),
+      inset 0 1px 0 0 hsl(0 0% 100% / 0.2);
+  }
+
+  /* Navbar / hero — high-intent booking CTA: soft glow + breathe (respects reduced motion below) */
+  .cta-book-now {
+    position: relative;
+    isolation: isolate;
+    will-change: box-shadow, filter;
+  }
+
+  .cta-book-now:not(:hover):not(:focus-visible) {
+    animation: cta-book-breathe 2.8s ease-in-out infinite;
+  }
+
+  .cta-book-now:hover,
+  .cta-book-now:focus-visible {
+    animation: none;
+    box-shadow:
+      0 0 0 1px hsl(var(--primary-foreground) / 0.28),
+      0 20px 52px hsl(var(--nature-deep) / 0.3),
+      0 0 48px hsl(var(--primary) / 0.42),
+      inset 0 1px 0 0 hsl(0 0% 100% / 0.3);
+    filter: drop-shadow(0 0 24px hsl(var(--primary) / 0.5));
+  }
+
+  /* Frosted cards on dark / photo overlays (e.g. Experiences over river) */
+  .glass-panel-light {
+    background-color: hsl(0 0% 100% / 0.11);
+    backdrop-filter: blur(18px) saturate(1.35);
+    -webkit-backdrop-filter: blur(18px) saturate(1.35);
+    border: 1px solid hsl(0 0% 100% / 0.18);
+    box-shadow: inset 0 1px 0 0 hsl(0 0% 100% / 0.16);
+  }
+
+  /* Contact section — Malnad green glass */
+  .glass-contact-shell {
+    background: linear-gradient(
+      155deg,
+      hsl(var(--card) / 0.58) 0%,
+      hsl(var(--primary) / 0.1) 42%,
+      hsl(var(--nature-mist) / 0.72) 100%
+    );
+    backdrop-filter: blur(22px) saturate(1.45);
+    -webkit-backdrop-filter: blur(22px) saturate(1.45);
+    border: 1px solid hsl(var(--primary) / 0.24);
+    box-shadow:
+      0 20px 50px hsl(var(--nature-deep) / 0.12),
+      inset 0 1px 0 0 hsl(0 0% 100% / 0.55),
+      inset 0 -1px 0 0 hsl(var(--primary) / 0.1);
+  }
+
+  .glass-panel-green {
+    background-color: hsl(var(--primary) / 0.11);
+    backdrop-filter: blur(16px) saturate(1.35);
+    -webkit-backdrop-filter: blur(16px) saturate(1.35);
+    border: 1px solid hsl(var(--primary) / 0.28);
+    box-shadow:
+      0 8px 28px hsl(var(--nature-deep) / 0.1),
+      inset 0 1px 0 0 hsl(0 0% 100% / 0.42);
+  }
+
+  .glass-contact-whatsapp {
+    background: linear-gradient(
+      135deg,
+      hsl(var(--primary) / 0.94) 0%,
+      hsl(var(--nature-deep) / 0.9) 48%,
+      hsl(var(--primary) / 0.88) 100%
+    );
+    backdrop-filter: blur(14px) saturate(1.4);
+    -webkit-backdrop-filter: blur(14px) saturate(1.4);
+    border: 1px solid hsl(var(--primary-foreground) / 0.22);
+    box-shadow:
+      0 16px 44px hsl(var(--nature-deep) / 0.28),
+      inset 0 1px 0 0 hsl(0 0% 100% / 0.18);
+  }
+
+  /* Stay gallery — Malnad green glass */
+  .glass-stay-shell {
+    background: linear-gradient(
+      158deg,
+      hsl(var(--card) / 0.52) 0%,
+      hsl(var(--primary) / 0.09) 38%,
+      hsl(var(--nature-mist) / 0.65) 72%,
+      hsl(var(--nature-pale) / 0.5) 100%
+    );
+    backdrop-filter: blur(22px) saturate(1.42);
+    -webkit-backdrop-filter: blur(22px) saturate(1.42);
+    border: 1px solid hsl(var(--primary) / 0.22);
+    box-shadow:
+      0 18px 48px hsl(var(--nature-deep) / 0.11),
+      inset 0 1px 0 0 hsl(0 0% 100% / 0.52),
+      inset 0 -1px 0 0 hsl(var(--primary) / 0.08);
+  }
+
+  .glass-stay-feature {
+    background: linear-gradient(
+      165deg,
+      hsl(var(--primary) / 0.12) 0%,
+      hsl(var(--card) / 0.48) 45%,
+      hsl(var(--nature-mist) / 0.55) 100%
+    );
+    backdrop-filter: blur(18px) saturate(1.38);
+    -webkit-backdrop-filter: blur(18px) saturate(1.38);
+    border: 1px solid hsl(var(--primary) / 0.28);
+    box-shadow:
+      0 10px 36px hsl(var(--nature-deep) / 0.1),
+      inset 0 1px 0 0 hsl(0 0% 100% / 0.48);
+  }
+
+  .glass-stay-video-tile {
+    background-color: hsl(var(--primary) / 0.1);
+    backdrop-filter: blur(14px) saturate(1.3);
+    -webkit-backdrop-filter: blur(14px) saturate(1.3);
+    border: 1px solid hsl(var(--primary) / 0.26);
+    box-shadow:
+      0 6px 24px hsl(var(--nature-deep) / 0.09),
+      inset 0 1px 0 0 hsl(0 0% 100% / 0.38);
+  }
+
+  .glass-stay-photo-tile {
+    background-color: hsl(var(--primary) / 0.07);
+    backdrop-filter: blur(12px) saturate(1.25);
+    -webkit-backdrop-filter: blur(12px) saturate(1.25);
+    border: 1px solid hsl(var(--primary) / 0.2);
+    box-shadow:
+      0 4px 18px hsl(var(--nature-deep) / 0.07),
+      inset 0 1px 0 0 hsl(0 0% 100% / 0.32);
+  }
+
+  /* Attractions / explore — airy green glass shell */
+  .glass-explore-shell {
+    background: linear-gradient(
+      152deg,
+      hsl(var(--card) / 0.5) 0%,
+      hsl(var(--nature-light) / 0.22) 28%,
+      hsl(var(--primary) / 0.08) 55%,
+      hsl(var(--nature-mist) / 0.62) 100%
+    );
+    backdrop-filter: blur(22px) saturate(1.4);
+    -webkit-backdrop-filter: blur(22px) saturate(1.4);
+    border: 1px solid hsl(var(--primary) / 0.2);
+    box-shadow:
+      0 16px 44px hsl(var(--nature-deep) / 0.1),
+      inset 0 1px 0 0 hsl(0 0% 100% / 0.5),
+      inset 0 -1px 0 0 hsl(var(--primary) / 0.07);
+  }
+}
+
+/* Parallax floating leaves */
+@keyframes float {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-20px) rotate(5deg); }
+}
+@keyframes float-delayed {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-15px) rotate(-3deg); }
+}
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+@keyframes pulse-soft {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.8; }
+}
+
+@keyframes cta-book-breathe {
+  0%, 100% {
+    box-shadow:
+      0 0 0 0 hsl(var(--primary) / 0.42),
+      0 12px 40px hsl(var(--nature-deep) / 0.18),
+      inset 0 1px 0 0 hsl(0 0% 100% / 0.22);
+    filter: drop-shadow(0 0 12px hsl(var(--primary) / 0.32));
+  }
+  50% {
+    box-shadow:
+      0 0 0 12px hsl(var(--primary) / 0),
+      0 16px 52px hsl(var(--nature-deep) / 0.24),
+      0 0 36px hsl(var(--primary) / 0.4),
+      inset 0 1px 0 0 hsl(0 0% 100% / 0.28);
+    filter: drop-shadow(0 0 28px hsl(var(--primary) / 0.52));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cta-book-now:not(:hover):not(:focus-visible) {
+    animation: none;
+  }
+  .cta-book-now {
+    filter: drop-shadow(0 0 10px hsl(var(--primary) / 0.28));
+  }
+}
+
+/* Navbar logo — strong glow + breathe */
+.nav-logo-glow-wrap {
+  position: relative;
+  isolation: isolate;
+  overflow: visible;
+}
+
+.nav-logo-glow-aura {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 0;
+  width: 155%;
+  height: 155%;
+  pointer-events: none;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  animation: nav-logo-aura-breathe 2.5s ease-in-out infinite;
+  transform-origin: center center;
+}
+
+.nav-logo-glow-aura--hero {
+  background: radial-gradient(
+    circle closest-side,
+    hsl(var(--primary) / 0.78) 0%,
+    hsl(0 0% 100% / 0.5) 42%,
+    transparent 68%
+  );
+  filter: blur(22px);
+}
+
+.nav-logo-glow-aura--scrolled {
+  background: radial-gradient(
+    circle closest-side,
+    hsl(var(--primary) / 0.92) 0%,
+    hsl(var(--gold-accent) / 0.45) 48%,
+    transparent 72%
+  );
+  filter: blur(24px);
+}
+
+.nav-logo-glow-img {
+  position: relative;
+  z-index: 1;
+}
+
+.nav-logo-glow-img--hero {
+  animation: nav-logo-img-breathe-hero 2.5s ease-in-out infinite;
+}
+
+.nav-logo-glow-img--scrolled {
+  animation: nav-logo-img-breathe-scrolled 2.5s ease-in-out infinite;
+}
+
+@keyframes nav-logo-aura-breathe {
+  0%,
+  100% {
+    opacity: 0.72;
+    transform: translate(-50%, -50%) scale(0.88);
+  }
+  50% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.14);
+  }
+}
+
+@keyframes nav-logo-img-breathe-hero {
+  0%,
+  100% {
+    filter:
+      drop-shadow(0 0 14px hsl(0 0% 100% / 0.65))
+      drop-shadow(0 0 32px hsl(var(--primary) / 0.5))
+      drop-shadow(0 4px 18px rgba(0, 0, 0, 0.4));
+  }
+  50% {
+    filter:
+      drop-shadow(0 0 26px hsl(0 0% 100% / 0.95))
+      drop-shadow(0 0 48px hsl(var(--primary) / 0.72))
+      drop-shadow(0 0 72px hsl(var(--primary) / 0.38))
+      drop-shadow(0 6px 22px rgba(0, 0, 0, 0.45));
+  }
+}
+
+@keyframes nav-logo-img-breathe-scrolled {
+  0%,
+  100% {
+    filter:
+      drop-shadow(0 0 12px hsl(var(--primary) / 0.55))
+      drop-shadow(0 0 30px hsl(var(--primary) / 0.32))
+      drop-shadow(0 0 44px hsl(var(--gold-accent) / 0.15));
+  }
+  50% {
+    filter:
+      drop-shadow(0 0 22px hsl(var(--primary) / 0.9))
+      drop-shadow(0 0 46px hsl(var(--primary) / 0.55))
+      drop-shadow(0 0 70px hsl(var(--primary) / 0.28))
+      drop-shadow(0 0 36px hsl(var(--gold-accent) / 0.28));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nav-logo-glow-aura {
+    animation: none;
+    opacity: 0.88;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  .nav-logo-glow-img--hero,
+  .nav-logo-glow-img--scrolled {
+    animation: none;
+  }
+  .nav-logo-glow-img--hero {
+    filter:
+      drop-shadow(0 0 12px hsl(0 0% 100% / 0.55))
+      drop-shadow(0 0 28px hsl(var(--primary) / 0.4))
+      drop-shadow(0 4px 14px rgba(0, 0, 0, 0.35));
+  }
+  .nav-logo-glow-img--scrolled {
+    filter:
+      drop-shadow(0 0 12px hsl(var(--primary) / 0.45))
+      drop-shadow(0 0 28px hsl(var(--primary) / 0.25));
+  }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+.animate-float-delayed {
+  animation: float-delayed 8s ease-in-out infinite;
+}
+.animate-shimmer {
+  background: linear-gradient(90deg, transparent, hsl(var(--nature-light) / 0.3), transparent);
+  background-size: 200% 100%;
+  animation: shimmer 3s ease-in-out infinite;
+}
+.animate-pulse-soft {
+  animation: pulse-soft 4s ease-in-out infinite;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: hsl(var(--nature-pale));
+}
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--nature-mid));
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--nature-deep));
+}
