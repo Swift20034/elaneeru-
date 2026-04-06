@@ -1,11 +1,14 @@
 import ScrollReveal from "./ScrollReveal";
-import { MapPin, Mountain, Droplets, Landmark } from "lucide-react";
+import { MapPin, Mountain, Droplets, Landmark, Sunrise } from "lucide-react";
 
 const attractions = [
   { name: "Elaneeru Waterfalls", distance: "500 meters", icon: Droplets, type: "waterfall" },
   { name: "Nethravathi Trek", distance: "Nearby", icon: Mountain, type: "trek" },
   { name: "Kudremukh Trek", distance: "Popular", icon: Mountain, type: "trek" },
   { name: "Bandaje Trek", distance: "Must-do", icon: Mountain, type: "trek" },
+  { name: "Gangadi Kallu Trek", distance: "Nearby", icon: Mountain, type: "trek" },
+  { name: "Kuranjal Trek", distance: "Nearby", icon: Mountain, type: "trek" },
+  { name: "Hasiru Gudda Morning Viewpoint", distance: "Sunrise views", icon: Sunrise, type: "viewpoint" },
   { name: "Ranijari Trek & Falls", distance: "Scenic", icon: Droplets, type: "waterfall" },
   { name: "Hornadu Temple", distance: "Sacred", icon: Landmark, type: "temple" },
   { name: "Kalaseshwara Temple", distance: "Historic", icon: Landmark, type: "temple" },
@@ -43,7 +46,9 @@ const AttractionsSection = () => (
                       ? "bg-sky-100/80 text-sky-600"
                       : place.type === "trek"
                         ? "bg-primary/15 text-primary"
-                        : "bg-accent/25 text-accent"
+                        : place.type === "viewpoint"
+                          ? "bg-amber-100/85 text-amber-700"
+                          : "bg-accent/25 text-accent"
                   }`}
                 >
                   <place.icon size={18} />
