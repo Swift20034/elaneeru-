@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useState, useEffect, useCallback, type MouseEvent } from "react";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { Menu, X, MessageCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import logo from "@/assets/logo.png";
@@ -20,6 +20,30 @@ const navLinks = [
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const reduceMotion = useReducedMotion();
+
+  const scrollToHash = useCallback(
+    (hash: string) => {
+      const id = hash.startsWith("#") ? hash.slice(1) : hash;
+      const el = document.getElementById(id);
+      if (!el) return false;
+      const behavior: ScrollBehavior = reduceMotion ? "auto" : "smooth";
+      el.scrollIntoView({ behavior, block: "start" });
+      window.history.replaceState(null, "", `#${id}`);
+      return true;
+    },
+    [reduceMotion],
+  );
+
+  const handleMobileHashClick = useCallback(
+    (e: MouseEvent<HTMLAnchorElement>, href: string) => {
+      if (!href.startsWith("#")) return;
+      e.preventDefault();
+      scrollToHash(href);
+      setMobileOpen(false);
+    },
+    [scrollToHash],
+  );
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
@@ -29,17 +53,33 @@ const Navbar = () => {
   }, []);
 
   return (
-    <motion.nav
-      initial={{ y: -100 }}
-      animate={{ y: 0 }}
-      transition={{ duration: 0.6 }}
-      className={cn(
-        "fixed top-0 left-0 right-0 z-50 transition-all duration-500",
-        scrolled
-          ? "bg-white border-b border-border/50 shadow-sm"
-          : "bg-transparent border-b border-transparent shadow-none",
-      )}
-    >
+    <>
+      <AnimatePresence>
+        {mobileOpen && (
+          <motion.button
+            key="nav-backdrop"
+            type="button"
+            aria-label="Close menu"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="fixed inset-0 z-40 md:hidden bg-foreground/35 backdrop-blur-[2px]"
+            onClick={() => setMobileOpen(false)}
+          />
+        )}
+      </AnimatePresence>
+      <motion.nav
+        initial={{ y: -100 }}
+        animate={{ y: 0 }}
+        transition={{ duration: 0.6 }}
+        className={cn(
+          "fixed top-0 left-0 right-0 z-50 transition-all duration-500",
+          scrolled
+            ? "bg-white border-b border-border/50 shadow-sm"
+            : "bg-transparent border-b border-transparent shadow-none",
+        )}
+      >
       <div className="container mx-auto flex items-center justify-between px-6 py-3 md:py-4">
         <a href="#home" className="flex items-center gap-3">
           <span className="nav-logo-glow-wrap inline-flex shrink-0 h-16 w-16 sm:h-[4.5rem] sm:w-[4.5rem] md:h-20 md:w-20 items-center justify-center">
@@ -125,8 +165,13 @@ const Navbar = () => {
 
         {/* Mobile toggle */}
         <button
+          type="button"
           onClick={() => setMobileOpen(!mobileOpen)}
-          className={cn("md:hidden p-2 transition-colors", scrolled ? "text-foreground" : "text-white drop-shadow-md")}
+          className={cn(
+            "md:hidden relative z-[1] p-2 transition-colors touch-manipulation",
+            scrolled ? "text-foreground" : "text-white drop-shadow-md",
+          )}
+          aria-expanded={mobileOpen}
           aria-label="Toggle menu"
         >
           {mobileOpen ? <X size={24} /> : <Menu size={24} />}
@@ -140,15 +185,15 @@ const Navbar = () => {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            className="md:hidden bg-white border-t border-border/50 overflow-hidden shadow-lg"
+            className="md:hidden relative z-[1] bg-white border-t border-border/50 overflow-hidden shadow-lg pointer-events-auto"
           >
-            <div className="flex flex-col p-6 gap-4">
+            <div className="flex flex-col p-6 gap-4 pointer-events-auto">
               {navLinks.map((link) => (
                 <a
                   key={link.href}
                   href={link.href}
-                  onClick={() => setMobileOpen(false)}
-                  className="text-base font-medium text-foreground/80 hover:text-primary py-2"
+                  onClick={(e) => handleMobileHashClick(e, link.href)}
+                  className="text-base font-medium text-foreground/80 hover:text-primary py-3 -my-1 touch-manipulation"
                 >
                   {link.label}
                 </a>
@@ -157,9 +202,11 @@ const Navbar = () => {
                 href={BOOK_WHATSAPP_HREF}
                 target="_blank"
                 rel="noopener noreferrer"
-                onClick={() => setMobileOpen(false)}
+                onClick={() => {
+                  window.setTimeout(() => setMobileOpen(false), 0);
+                }}
                 className={cn(
-                  "glass-cta-primary cta-book-now inline-flex items-center justify-center gap-2 w-full",
+                  "glass-cta-primary cta-book-now inline-flex items-center justify-center gap-2 w-full touch-manipulation",
                   "text-primary-foreground px-5 py-3 rounded-full text-sm font-semibold text-center mt-2 tracking-wide",
                   "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-white",
                 )}
@@ -175,6 +222,7 @@ const Navbar = () => {
         )}
       </AnimatePresence>
     </motion.nav>
+    </>
   );
 };
 
