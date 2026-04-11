@@ -1,3 +1,5 @@
+import { GOOGLE_MAPS_URL, LOCATION_LAT, LOCATION_LNG } from "@/config/site";
+
 /** Schema.org graph — base URL from env for Vercel previews vs production */
 export function buildStructuredData(baseUrl: string) {
   const u = (path: string) => `${baseUrl.replace(/\/$/, "")}${path.startsWith("/") ? path : `/${path}`}`;
@@ -42,9 +44,10 @@ export function buildStructuredData(baseUrl: string) {
         },
         geo: {
           "@type": "GeoCoordinates",
-          latitude: 13.3161,
-          longitude: 75.772,
+          latitude: LOCATION_LAT,
+          longitude: LOCATION_LNG,
         },
+        hasMap: GOOGLE_MAPS_URL,
         areaServed: [
           { "@type": "City", name: "Chikkamagaluru" },
           { "@type": "AdministrativeArea", name: "Chikmagalur district, Karnataka" },

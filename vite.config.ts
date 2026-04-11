@@ -8,8 +8,10 @@ process.env.BROWSERSLIST_IGNORE_OLD_DATA = "1";
 // https://vitejs.dev/config/
 export default defineConfig({
   server: {
-    host: "::",
-    port: 8080,
+    host: true,
+    port: 5173,
+    /** If another app uses 5173, Vite tries the next free port instead of exiting. */
+    strictPort: false,
     hmr: {
       overlay: false,
     },

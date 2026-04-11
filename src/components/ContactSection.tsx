@@ -1,5 +1,6 @@
 import ScrollReveal from "./ScrollReveal";
 import { Phone, Mail, Instagram, MapPin } from "lucide-react";
+import { GOOGLE_MAPS_EMBED_SRC, GOOGLE_MAPS_URL } from "@/config/site";
 
 const ContactSection = () => (
   <section id="contact" className="py-16 md:py-20 relative overflow-hidden bg-gradient-to-b from-background via-nature-mist/40 to-nature-pale/50">
@@ -67,12 +68,37 @@ const ContactSection = () => (
           </ScrollReveal>
         </div>
 
-        {/* Location */}
+        {/* Location + minimap */}
         <ScrollReveal delay={0.2}>
-          <div className="mt-8 glass-panel-green rounded-xl p-6 text-center hover:border-primary/40 transition-colors">
-            <MapPin className="mx-auto text-primary mb-2" size={22} />
-            <p className="font-medium text-foreground">Elaneeru, Chikkamagaluru, Karnataka</p>
-            <p className="text-sm text-muted-foreground mt-1">Nestled in the Western Ghats</p>
+          <div className="mt-8 glass-panel-green rounded-xl overflow-hidden border border-primary/20 shadow-sm hover:border-primary/35 transition-colors">
+            <p className="sr-only">Map showing Elaneeru Homestay location in Chikkamagaluru</p>
+            <div className="grid md:grid-cols-[1.2fr_1fr] gap-0">
+              <div className="relative h-[180px] sm:h-[200px] md:h-[220px] md:min-h-[200px] bg-muted/30">
+                <iframe
+                  title="Elaneeru Homestay — Google Maps minimap"
+                  src={GOOGLE_MAPS_EMBED_SRC}
+                  className="absolute inset-0 h-full w-full border-0"
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  allowFullScreen
+                />
+              </div>
+              <div className="p-5 sm:p-6 flex flex-col justify-center text-center md:text-left gap-2 border-t md:border-t-0 md:border-l border-primary/15">
+                <MapPin className="mx-auto md:mx-0 text-primary shrink-0" size={22} aria-hidden />
+                <div>
+                  <p className="font-semibold text-foreground">Elaneeru, Chikkamagaluru, Karnataka</p>
+                  <p className="text-sm text-muted-foreground mt-1">Nestled in the Western Ghats</p>
+                </div>
+                <a
+                  href={GOOGLE_MAPS_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center justify-center md:justify-start gap-1 text-sm font-semibold text-primary hover:underline mt-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-sm"
+                >
+                  Open in Google Maps →
+                </a>
+              </div>
+            </div>
           </div>
         </ScrollReveal>
       </div>
